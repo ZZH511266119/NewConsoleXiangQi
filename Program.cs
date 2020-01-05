@@ -9,15 +9,16 @@ namespace XiangqiProject
 
             View view = new View();
             view.game.Initialize();
-            while (!view.game.GameOver())
+            view.Introduction();
+            while (view.game.GameOver() == 2)
             {
                 try
                 {
-                    switch (view.game.state)
+                    switch (view.game.state)//
                     {
                         case "choose":
                             view.Display();
-                            view.PlayerChoose();
+                            view.Option();
                             view.game.ChangeState();
                             break;
 
@@ -27,10 +28,10 @@ namespace XiangqiProject
                             view.game.SwitchPlayer();
                             break;
                             
-                    }
+                    }//
 
                     /**
-                     *                     if(view.game.color == "red")
+                    if(view.game.color == "red")
                     {
                         switch (view.game.state)
                         {
@@ -64,14 +65,21 @@ namespace XiangqiProject
                 }
             }
 
-
-            if (view.game.WhoWin())
+            if(view.game.GameOver() == 1)
             {
-                Console.WriteLine("Gameover! Black player win!");
+                if (view.game.WhoWin())
+                {
+                    Console.WriteLine("Gameover! Black player win!");
+                }
+                else
+                {
+                    Console.WriteLine("Gameover! Red player win!");
+                }
             }
+
             else
             {
-                Console.WriteLine("Gameover! Red player win!");
+                Console.WriteLine("Draw!");
             }
 
         }

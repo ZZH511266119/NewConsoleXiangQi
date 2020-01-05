@@ -691,7 +691,7 @@ namespace XiangqiProject
                                 }
                                 if (middlePiece == 0)
                                 {
-                                    board[blackGeneral.column, blackGeneral.row].ChangeCanGo();
+                                    board[blackGeneral.row, blackGeneral.column].ChangeCanGo();
                                 }
                             }
                             break;
@@ -731,7 +731,7 @@ namespace XiangqiProject
                                 int middlePiece = 0;
                                 for (int i = chessRow + 1; i < redGeneral.row; i++)
                                 {
-                                    if (board[column, i].GetName() != "nochess")
+                                    if (board[i, chessColumn].GetName() != "nochess")
                                     {
                                         middlePiece = middlePiece + 1;
                                     }
@@ -739,7 +739,7 @@ namespace XiangqiProject
                                 }
                                 if (middlePiece == 0)
                                 {
-                                    board[redGeneral.column, redGeneral.row].ChangeCanGo();
+                                    board[redGeneral.row, redGeneral.column].ChangeCanGo();
                                 }
                             }
                             break;

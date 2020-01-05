@@ -10,6 +10,10 @@ namespace XiangqiProject
         public Board displayController = new Board();
         public string color = "red";
         public string state = "choose";
+        List<int[]> saveRedMove = new List<int[]>();
+        List<int[]> saveBlackMove = new List<int[]>();
+        List<Piece> redBeEaten = new List<Piece>();
+        List<Piece> blackBeEaten = new List<Piece>();
         List<int[]> saveAllMove = new List<int[]>();
         public Board simulateMoveBoard = new Board();
         public Board simulateEnemyMoveBoard = new Board();
@@ -39,27 +43,22 @@ namespace XiangqiProject
             }
         }
 
-        public bool GameOver()
+        public int GameOver()
         {
             int generalNumber = 0;
-            bool gameOver = true;
             for(int i = 0; i <= 9; i++)
             {
                 for(int j = 0; j <= 8; j++)
                 {
                     if (controller.board[i,j].GetName() == "将")
                     {
-                        generalNumber--;
+                        generalNumber++;
                     }
                 }
             }
 
-            if(generalNumber != 2)
-            {
-                gameOver = false;
-            }
 
-            return gameOver;
+            return generalNumber;
         }
 
         public bool WhoWin()
@@ -97,6 +96,26 @@ namespace XiangqiProject
 
         public void ChooseAndMove(int beginrow, int begincol, int endrow, int endcol)
         {
+            if (color == "red")
+            {
+                int[] redMove = new int[4];
+                redMove[0] = beginrow;
+                redMove[1] = begincol;
+                redMove[2] = endrow;
+                redMove[3] = endcol;
+                blackBeEaten.Add(controller.board[endrow, endcol]);
+                saveRedMove.Add(redMove);
+            }
+            if (color == "black")
+            {
+                int[] blackMove = new int[4];
+                blackMove[0] = beginrow;
+                blackMove[1] = begincol;
+                blackMove[2] = endrow;
+                blackMove[3] = endcol;
+                redBeEaten.Add(controller.board[endrow, endcol]);
+                saveBlackMove.Add(blackMove);
+            }
             controller.board[endrow, endcol] = controller.board[beginrow, begincol];
             controller.board[endrow, endcol].row = endrow;
             controller.board[endrow, endcol].column = endcol;
@@ -641,5 +660,58 @@ namespace XiangqiProject
 
             return bestpoint;
         }
+
+        public void Undo()
+        {
+            if(color == "red")
+            {
+                int[] blackMove = new int[4];
+                blackMove = saveBlackMove[saveBlackMove.ToArray().Length -1 ];
+                controller.board[blackMove[0], blackMove[1]] = controller.board[blackMove[2], blackMove[3]];
+                controller.board[blackMove[2], blackMove[3]] = redBeEaten[redBeEaten.ToArray().Length -1];
+                saveBlackMove.RemoveAt(saveBlackMove.ToArray().Length -1);
+                redBeEaten.RemoveAt(redBeEaten.ToArray().Length - 1);
+            }
+            else if (color == "black")
+            {
+                int[] redMove = new int[4];
+                int a = saveBlackMove.ToArray().Length;
+                redMove = saveRedMove[saveRedMove.ToArray().Length - 1];
+                controller.board[redMove[0], redMove[1]] = controller.board[redMove[2], redMove[3]];
+                controller.board[redMove[2], redMove[3]] = blackBeEaten[blackBeEaten.ToArray().Length - 1];
+                saveRedMove.RemoveAt(saveRedMove.ToArray().Length - 1);
+                blackBeEaten.RemoveAt(blackBeEaten.ToArray().Length - 1);
+            }
+
+        }
+
+        public void Draw()
+        {
+            for (int i = 0; i <= 9; i++)
+            {
+                for (int j = 0; j <= 8; j++)
+                {
+                    if (controller.board[i, j].GetName() == "将")
+                    {
+                        controller.board[i, j] = new nochess(0, 0);
+                    }
+                }
+            }
+        }
+
+        public void Concede()
+        {
+            for (int i = 0; i <= 9; i++)
+            {
+                for (int j = 0; j <= 8; j++)
+                {
+                    if (controller.board[i, j].GetName() == "将" && controller.board[i,j].GetColor() == color)
+                    {
+                        controller.board[i, j] = new nochess(0, 0);
+                    }
+                }
+            }
+        }
+
     }
 }

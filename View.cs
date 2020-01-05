@@ -8,6 +8,17 @@ namespace XiangqiProject
         string[,] displayBoard = new string[11, 10];
         int[] beginPoint;
 
+        public void Introduction()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("There are three types of input you can use when choosing pieces:");
+            Console.WriteLine("1. Enter the correct coordinates.");
+            Console.WriteLine("2. Enter 'Draw'.");
+            Console.WriteLine("3. Enter 'Undo'.");
+            Console.WriteLine("4. Enter 'Concede'.");
+            Console.WriteLine();
+        }
+
         public string[,] NormalBoard()
         {
             string[,] displayArray = {
@@ -75,20 +86,111 @@ namespace XiangqiProject
             Console.WriteLine();
         }
 
-        public void GetInformation(Controller game)
-        {
-            this.game = game;
-        }
-
-        public void PlayerChoose()//选择棋子
+        public void Option()
         {
             string receiveBegin;
+            Console.Write("{ ");
+            switch (game.color)
+            {
+                case "red":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+
+                case "black":
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+            }
+            Console.Write(game.color);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(" } Which pieces do you want to move? Please input its aix(Ex: row,column) : ");
+            Console.WriteLine();
+            receiveBegin = Console.ReadLine();
+
+            if(receiveBegin == "Undo")
+            {
+                Console.Write("{ ");
+                switch (game.color)
+                {
+                    case "red":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+
+                    case "black":
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        break;
+                }
+                Console.Write(game.color);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(" } "+ game.color+" player do you accept undo?");
+                string answear = Console.ReadLine();
+                if(answear == "yes"){
+                    game.Undo();
+                    game.RefreshCanGo();
+                    game.ChangeState();
+                    game.SwitchPlayer();
+                }
+                else if(answear == "no"){
+                    Console.WriteLine();
+                    game.SwitchPlayer();
+                    game.ChangeState();
+                    Console.WriteLine("You are not acceptable to undo.");
+                }
+                else
+                {
+                    throw new Exception("check you input!");
+                }
+            }
+
+            else if (receiveBegin == "Draw")
+            {
+                game.SwitchPlayer();
+                Console.Write("{ ");
+                switch (game.color)
+                {
+                    case "red":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+
+                    case "black":
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        break;
+                }
+                Console.Write(game.color);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(" } " + game.color + " player do you accept draw?");
+                string answear = Console.ReadLine();
+                if (answear == "yes")
+                {
+                    game.Draw();
+                }
+                else if (answear == "no")
+                {
+                    Console.WriteLine();
+                    game.SwitchPlayer();
+                    game.ChangeState();
+                    Console.WriteLine("You are not acceptable to draw.");
+                }
+                else
+                {
+                    throw new Exception("check you input!");
+                }
+            }
+
+            else if (receiveBegin == "Concede"){
+                game.Concede();
+            }
+            else
+            {
+                PlayerChoose(receiveBegin);
+            }
+        }
+
+        public void PlayerChoose(string receiveBegin)//选择棋子
+        {
             string[] beginPoint = new string[2];
             int[] beginPointInt = new int[2];
 
             game.EmptyCanGo(game.controller);
-            Console.WriteLine("Which pieces do you want to move? Please input its aix(Ex: row,column) : ");
-            receiveBegin = Console.ReadLine();
             game.FindBigningPointException(receiveBegin);
             beginPoint = receiveBegin.Split(',');
             beginPointInt[0] = Convert.ToInt32(beginPoint[0]);
@@ -105,7 +207,20 @@ namespace XiangqiProject
             int[] endPointInt = new int[2];
             string receiveEnd;
             string[] endPoint = new string[2];
-            Console.WriteLine("Where do you want to go? Please input its aix(Ex: row,column) : ");
+            Console.Write("{ ");
+            switch (game.color)
+            {
+                case "red":
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+
+                case "black":
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+            }
+            Console.Write(game.color);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(" } Where do you want to go? Please input its aix(Ex: row,column) : ");
             receiveEnd = Console.ReadLine();
             game.FindEndingPointException(receiveEnd, this.beginPoint);
             endPoint = receiveEnd.Split(',');
